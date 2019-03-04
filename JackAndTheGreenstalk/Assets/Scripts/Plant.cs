@@ -114,6 +114,14 @@ public class Plant : MonoBehaviour
     float currentPotassiumLevel = 100f;
     public Text PotassiumLevelText;
 
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            GrowPlant();
+        }
+    }
+
     public void PlantSeed()
     {
         PlantState = PLANT_STATE.SEEDLING;

@@ -166,3 +166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d6d51fdc7a90484399646c77b7ce983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Generation: 1
+  GrowthPoints: []
+  parent: {fileID: 0}

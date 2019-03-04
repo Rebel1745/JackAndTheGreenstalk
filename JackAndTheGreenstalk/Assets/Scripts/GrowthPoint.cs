@@ -11,6 +11,9 @@ public class GrowthPoint : MonoBehaviour
 
     Plant plant;
 
+    public int Generation;
+    int currentGen;
+
     public List<GameObject> GrowthPoints = new List<GameObject>();
     public Transform parent;
 
@@ -21,29 +24,45 @@ public class GrowthPoint : MonoBehaviour
 
     public IEnumerator Grow()
     {
-        Vector3 spawnPos = Vector3.zero;
-        Quaternion spawnRot = Quaternion.identity;
-        Transform conPoint = null;
-
-        spawnPos = parent.Find("ConnectPoint").position;
-        spawnRot = parent.Find("ConnectPoint").rotation;
-
-        if(lastSegment != null)
+        if(Generation <= 3 && currentGen == Generation)
         {
-            conPoint = lastSegment.transform.Find("ConnectPoint");
-            spawnPos = conPoint.position;
-            spawnRot = conPoint.rotation;
+            Vector3 spawnPos = Vector3.zero;
+            Quaternion spawnRot = Quaternion.identity;
+            Transform conPoint = null;
+
+            spawnPos = parent.Find("ConnectPoint").position;
+            spawnRot = parent.Find("ConnectPoint").rotation;
+
+            if (lastSegment != null)
+            {
+                conPoint = lastSegment.transform.Find("ConnectPoint");
+                spawnPos = conPoint.position;
+                spawnRot = conPoint.rotation;
+            }
+
+            int randPlant = Random.Range(0, plant.PlantSegmentPrefab.Length);
+
+            GameObject segmentGo = Instantiate(plant.PlantSegmentPrefab[randPlant], spawnPos, spawnRot, this.transform);
+
+            if (randPlant != 0 && randPlant != 1)
+                lastSegment = segmentGo;
+
+            GrowthPoint gp = segmentGo.GetComponent<GrowthPoint>();
+
+            if (gp)
+            {
+                gp.parent = segmentGo.transform;
+                gp.Generation = Generation++;
+                plant.GrowthPoints.Add(segmentGo);
+            }
+
+            currentGen = 0;
         }
-
-        int randPlant = Random.Range(0, plant.PlantSegmentPrefab.Length);
-
-        lastSegment = Instantiate(plant.PlantSegmentPrefab[randPlant], spawnPos, spawnRot, this.transform);
-
-        if (lastSegment.GetComponent<GrowthPoint>())
+        else
         {
-            lastSegment.GetComponent<GrowthPoint>().parent = lastSegment.transform;
-            plant.GrowthPoints.Add(lastSegment);
+            currentGen++;
         }
+        
         // somthing is happening after the new growth point is added
         yield return null;
     }
