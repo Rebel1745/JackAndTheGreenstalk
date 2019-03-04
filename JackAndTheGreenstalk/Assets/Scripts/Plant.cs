@@ -13,6 +13,12 @@ public class Plant : MonoBehaviour
         DisplayStats();
     }
 
+    List<GameObject> plantSegments = new List<GameObject>();
+    public GameObject[] PlantSegmentPrefab;
+    public GameObject RootPrefab;
+
+    public List<GameObject> GrowthPoints = new List<GameObject>();
+
     // Stats
     int ageInDays;
     public Text AgeInDaysText;
@@ -33,7 +39,7 @@ public class Plant : MonoBehaviour
     public float MinGrowRate;
     public float MaxGrowRate;
     float maxGrowRate;
-    float currentGrowRate;
+    public float CurrentGrowRate;
     public Text CurrentGrowRateText;
 
     public float MinYield;
@@ -127,19 +133,64 @@ public class Plant : MonoBehaviour
         phosphorusConsumption = Random.Range(MinPhosphorusConsumption, MaxPhosphorusConsumption);
         potassiumConsumption = Random.Range(MinPotassiumConsumption, MaxPotassiumConsumption);
 
-        currentGrowRate = maxGrowRate;
-    }
+        CurrentGrowRate = maxGrowRate;
 
+        GameObject go = Instantiate(RootPrefab, transform.position, transform.rotation, transform);
+        GrowthPoints.Add(go);
+        go.GetComponent<GrowthPoint>().parent = go.transform;
+    }
+    
     // move the game along and calculate the new state of the plant
     public void AdvanceDay()
     {
         ageInDays++;
 
-        currentHeight += currentGrowRate;
+        currentHeight += CurrentGrowRate;
         currentWaterLevel -= waterConsumption;
         currentNitrogenLevel -= nitrogenConsumption;
         currentPhosphorusLevel -= phosphorusConsumption;
         currentPotassiumLevel -= potassiumConsumption;
+
+
+        //int randPlant = Random.Range(0, PlantSegmentPrefab.Length);
+
+        //plantSegments.Add(PlantSegmentPrefab[randPlant]);
+
+        //DisplayPlant();
+
+        GrowPlant();
+    }
+
+    void GrowPlant()
+    {
+        foreach(GameObject g in GrowthPoints)
+        {
+            StartCoroutine(g.GetComponent<GrowthPoint>().Grow());
+        }
+    }
+
+    void DisplayPlant()
+    {
+        GameObject prevGo = null;
+        Vector3 spawnPos = transform.position;
+        Quaternion spawnRot = transform.rotation;
+
+        //remove current plant segments
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
+        foreach(GameObject g in plantSegments)
+        {
+            if(prevGo != null)
+            {
+                spawnPos = prevGo.transform.Find("ConnectPoint").transform.position;
+                spawnRot = prevGo.transform.Find("ConnectPoint").transform.rotation;
+            }           
+
+            prevGo = Instantiate(g.gameObject, spawnPos, spawnRot, this.transform); ;
+        }
     }
 
     public void DisplayStats()
@@ -147,7 +198,7 @@ public class Plant : MonoBehaviour
         AgeInDaysText.text = ageInDays.ToString();
         FloweringDayText.text = RoundToDP(floweringDay, 0f).ToString();
         CurrentHeightText.text = RoundToDP(currentHeight, 2f).ToString();
-        CurrentGrowRateText.text = RoundToDP(currentGrowRate, 2f).ToString();
+        CurrentGrowRateText.text = RoundToDP(CurrentGrowRate, 2f).ToString();
         MaxYieldText.text = RoundToDP(maxYield, 0f).ToString();
         THCContentText.text = RoundToDP(THCContent, 1f).ToString();
         CBDContentText.text = RoundToDP(CBDContent, 1f).ToString();
