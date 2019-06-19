@@ -39,8 +39,13 @@ public class GrowthPoint : MonoBehaviour
                 spawnPos = conPoint.position;
                 spawnRot = conPoint.rotation;
             }
-
+            
             int randPlant = Random.Range(0, plant.PlantSegmentPrefab.Length);
+
+            if(Generation > 1)
+            {
+                randPlant = 3;
+            }
 
             GameObject segmentGo = Instantiate(plant.PlantSegmentPrefab[randPlant], spawnPos, spawnRot, this.transform);
 
