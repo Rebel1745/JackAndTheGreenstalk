@@ -57,7 +57,8 @@ public class ConnectableObject : MonoBehaviour
 
     IEnumerator ConnectToParentCo()
     {
-        transform.position = parentConnectPoint.position;
+        if(Parent)
+            transform.position = parentConnectPoint.position;
 
         if (Child)
         {
