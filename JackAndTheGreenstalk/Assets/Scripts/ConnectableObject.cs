@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ConnectableObject : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         if (Parent)
@@ -45,22 +44,20 @@ public class ConnectableObject : MonoBehaviour
     public Transform ConnectPointParent;
     public Transform ConnectPointChild;
 
-    private void Update()
-    {
-        ConnectToParent();
-    }
-
     public void ConnectToParent()
     {
         StartCoroutine("ConnectToParentCo");
     }
 
-    IEnumerator ConnectToParentCo()
+    public IEnumerator ConnectToParentCo()
     {
-        if(Parent)
-            transform.position = parentConnectPoint.position;
+        // TODO - do some tests with rotation.  it should be as simple as just following the rotation of the parent
+        Vector3 newPos = parentConnectPoint.position + (transform.position - ConnectPointParent.position);
 
-        if (Child)
+        if(Parent)
+            transform.position = newPos;
+
+        if (childCO)
         {
             childCO.ConnectToParent();
         }
