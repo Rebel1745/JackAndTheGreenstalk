@@ -51,11 +51,13 @@ public class ConnectableObject : MonoBehaviour
 
     public IEnumerator ConnectToParentCo()
     {
-        // TODO - do some tests with rotation.  it should be as simple as just following the rotation of the parent
         Vector3 newPos = parentConnectPoint.position + (transform.position - ConnectPointParent.position);
+        Quaternion newRot = Parent.rotation;
 
-        if(Parent)
+        if(Parent){
             transform.position = newPos;
+            transform.rotation = newRot;
+        }
 
         if (childCO)
         {
