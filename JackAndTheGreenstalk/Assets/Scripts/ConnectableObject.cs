@@ -35,11 +35,11 @@ public class ConnectableObject : MonoBehaviour
     public Transform ObjectTransform;
 
     public Transform Parent;
-    public ConnectableObject parentCO;
-    public Transform parentConnectPoint;
+    ConnectableObject parentCO;
+    Transform parentConnectPoint;
 
     public Transform Child;
-    public ConnectableObject childCO;
+    ConnectableObject childCO;
 
     public Transform ConnectPointParent;
     public Transform ConnectPointChild;
@@ -51,10 +51,10 @@ public class ConnectableObject : MonoBehaviour
 
     public IEnumerator ConnectToParentCo()
     {
-        Vector3 newPos = parentConnectPoint.position + (transform.position - ConnectPointParent.position);
-        Quaternion newRot = Parent.rotation;
 
         if(Parent){
+            Vector3 newPos = parentConnectPoint.position + (transform.position - ConnectPointParent.position);
+            Quaternion newRot = Parent.rotation;
             transform.position = newPos;
             transform.rotation = newRot;
         }
