@@ -21,11 +21,6 @@ public class ConnectableObject : MonoBehaviour
             ObjectTransform = GetComponent<Transform>();
         }
 
-        if (Child)
-        {
-            childCO = Child.gameObject.GetComponent<ConnectableObject>();
-        }
-
         if (!ConnectPointParent)
             ConnectPointParent = transform;
         if (!ConnectPointChild)
@@ -38,18 +33,13 @@ public class ConnectableObject : MonoBehaviour
     ConnectableObject parentCO;
     Transform parentConnectPoint;
 
-    public Transform Child;
+    public Transform[] Children;
     ConnectableObject childCO;
 
     public Transform ConnectPointParent;
     public Transform ConnectPointChild;
 
-    public void ConnectToParent()
-    {
-        StartCoroutine("ConnectToParentCo");
-    }
-
-    public IEnumerator ConnectToParentCo()
+    public IEnumerator ConnectToParent()
     {
 
         if(Parent){
@@ -59,10 +49,15 @@ public class ConnectableObject : MonoBehaviour
             transform.rotation = newRot;
         }
 
-        if (childCO)
+        foreach (Transform t in Children)
         {
-            childCO.ConnectToParent();
+            childCO = t.gameObject.GetComponent<ConnectableObject>();
+            if (childCO)
+            {
+                childCO.ConnectToParent();
+            }
         }
+        
         yield return null;
-    } 
+    }
 }

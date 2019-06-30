@@ -51,7 +51,7 @@ public class GrowableObject : MonoBehaviour
 
         if (CO)
         {
-            StartCoroutine(CO.ConnectToParentCo());
+            StartCoroutine(CO.ConnectToParent());
         }
 
         yield return null;
